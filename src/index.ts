@@ -5,7 +5,7 @@ function spaceFlight(): any {
     image.src = '../images/rock.png';
 
     var ship = new Image();
-    ship.src = '../images/ship_1.png';
+    ship.src = '../images/rocket_1.png';
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
@@ -23,8 +23,8 @@ function spaceFlight(): any {
     let shipX: number = 50;
     let shipY: number = canvasHeight / 2 - 100;
 
-    const shipHeight: number = 75;
-    const shipWidth: number = 95;
+    const shipHeight: number = 50;
+    const shipWidth: number = 140;
 
     let count: number = 3;
 
@@ -77,7 +77,7 @@ function spaceFlight(): any {
 
     function shipDraw(): void {
         ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
-        gameTimer % 3 === 0 ? ship.src = '../images/ship_1.png' : ship.src = '../images/ship_2.png';
+        gameTimer % 3 === 0 ? ship.src = '../images/rocket_1.png' : ship.src = '../images/rocket_2.png';
     }
 
     function beginCountdown() {
@@ -289,7 +289,7 @@ function spaceFlight(): any {
         } else {
             restart();
         }
-
+        console.log(sprites[1])
         requestAnimationFrame(update);
     }
 

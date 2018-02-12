@@ -74,7 +74,7 @@ function spaceFlight() {
     var image = new Image;
     image.src = '../images/rock.png';
     var ship = new Image();
-    ship.src = '../images/ship_1.png';
+    ship.src = '../images/rocket_1.png';
     var canvas;
     var ctx;
     canvas = document.getElementById('spaceFlight');
@@ -87,8 +87,8 @@ function spaceFlight() {
     var shipMoveSpeed = 15;
     var shipX = 50;
     var shipY = canvasHeight / 2 - 100;
-    var shipHeight = 75;
-    var shipWidth = 95;
+    var shipHeight = 50;
+    var shipWidth = 140;
     var count = 3;
     var score = 0;
     var direction = 1;
@@ -129,12 +129,11 @@ function spaceFlight() {
     });
     function shipDraw() {
         ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
-        gameTimer % 3 === 0 ? ship.src = '../images/ship_1.png' : ship.src = '../images/ship_2.png';
+        gameTimer % 3 === 0 ? ship.src = '../images/rocket_1.png' : ship.src = '../images/rocket_2.png';
     }
     function beginCountdown() {
         if (started === false) {
             started = true;
-            var endCount = false;
             var displayCountdown_1 = function () {
                 setTimeout(function () {
                     if (count !== 0) {
@@ -322,6 +321,7 @@ function spaceFlight() {
         else {
             restart();
         }
+        console.log(sprites[1]);
         requestAnimationFrame(update);
     }
     requestAnimationFrame(update);
