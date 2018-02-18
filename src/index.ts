@@ -69,7 +69,7 @@ function spaceFlight(): any {
             yr: 0,
             r: random(Math.PI * 2),
             scale: random(0.1, 0.5),// Meteor Size
-            dx: random(-8, 0), // Meteor Speed
+            dx: random(-8, -2), // Meteor Speed
             dy: random(0, 0),
             dr: random(-0.2, 0.2),
         });
@@ -261,11 +261,27 @@ function spaceFlight(): any {
         let ihM, iwM;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, w, h);
-
-
         if (image.complete && startMeteorShower) {
             let iw = image.width;
             let ih = image.height;
+
+            for (let i = 0; i < sprites.length; i++) {
+                if (sprites[i].x < 0) {
+                    sprites.splice(i, 1);
+                    sprites.push({
+                        x: w + 200,
+                        y: random(0, h + 100),
+                        xr: 0,
+                        yr: 0,
+                        r: random(Math.PI * 2),
+                        scale: random(0.1, 0.5),// Meteor Size
+                        dx: random(-8, -2), // Meteor Speed
+                        dy: random(0, 0),
+                        dr: random(-0.2, 0.2),
+                    });
+                }
+            }
+
             for (let i = 0; i < sprites.length; i++) {
                 let spr = sprites[i];
                 spr.x += spr.dx;
@@ -278,6 +294,8 @@ function spaceFlight(): any {
                 drawImage(image, spr);
             }
         }
+
+        console.log(sprites[0].x);
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.rotate(0);

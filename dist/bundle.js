@@ -122,7 +122,7 @@ function spaceFlight() {
             yr: 0,
             r: random(Math.PI * 2),
             scale: random(0.1, 0.5),
-            dx: random(-8, 0),
+            dx: random(-8, -2),
             dy: random(0, 0),
             dr: random(-0.2, 0.2),
         });
@@ -301,6 +301,22 @@ function spaceFlight() {
             var iw = image.width;
             var ih = image.height;
             for (var i = 0; i < sprites.length; i++) {
+                if (sprites[i].x < 0) {
+                    sprites.splice(i, 1);
+                    sprites.push({
+                        x: w + 200,
+                        y: random(0, h + 100),
+                        xr: 0,
+                        yr: 0,
+                        r: random(Math.PI * 2),
+                        scale: random(0.1, 0.5),
+                        dx: random(-8, -2),
+                        dy: random(0, 0),
+                        dr: random(-0.2, 0.2),
+                    });
+                }
+            }
+            for (var i = 0; i < sprites.length; i++) {
                 var spr = sprites[i];
                 spr.x += spr.dx;
                 spr.y += spr.dy;
@@ -312,6 +328,7 @@ function spaceFlight() {
                 drawImage(image, spr);
             }
         }
+        console.log(sprites[0].x);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.rotate(0);
         if (!gameOver) {
