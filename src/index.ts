@@ -1,10 +1,10 @@
 import {SprModel} from './spr.model';
 
 function spaceFlight(): any {
-    var image = new Image;
+    let image = new Image;
     image.src = '../images/rock.png';
 
-    var ship = new Image();
+    let ship = new Image();
     ship.src = '../images/rocket_1.png';
 
     let canvas: HTMLCanvasElement;
@@ -17,9 +17,9 @@ function spaceFlight(): any {
     let canvasWidth: number = canvas.width;
     let canvasHeight: number = canvas.height;
 
-    let gameTimer: number = 0;
+    let gameTimer: number = 4;
 
-    let shipMoveSpeed: number = 15;
+    let shipMoveSpeed: number = 10;
     let shipX: number = 50;
     let shipY: number = canvasHeight / 2 - 100;
 
@@ -37,7 +37,7 @@ function spaceFlight(): any {
     let gameOver: boolean = false;
     let started: boolean = false;
 
-    var w: number;
+    let w: number;
     let h: number;
 
     const sprites: SprModel[] = [];
@@ -63,21 +63,23 @@ function spaceFlight(): any {
 
     meteor(30, () => {
         sprites.push({
-            x: random(w, 2000),
-            y: random(h),
+            x: random(w - 500, w + 500),
+            y: random(0, h + 100),
             xr: 0,
             yr: 0,
             r: random(Math.PI * 2),
-            scale: random(0.1, 0.5),
-            dx: random(-2, 0),
+            scale: random(0.1, 0.5),// Meteor Size
+            dx: random(-8, 0), // Meteor Speed
             dy: random(0, 0),
             dr: random(-0.2, 0.2),
         });
     });
 
     function shipDraw(): void {
-        ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
-        gameTimer % 3 === 0 ? ship.src = '../images/rocket_1.png' : ship.src = '../images/rocket_2.png';
+        if (ship.complete && startMeteorShower) {
+            ship.src = gameTimer % 4 === 0 ? '../images/rocket_1.png' : '../images/rocket_2.png';
+            ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
+        }
     }
 
     function beginCountdown() {
@@ -102,7 +104,6 @@ function spaceFlight(): any {
             ctx.textAlign = 'center';
             ctx.fillText(count.toString(), canvas.width / 2, canvas.height / 2);
         }
-
     }
 
     document.addEventListener('keydown', (event) => {
@@ -184,7 +185,7 @@ function spaceFlight(): any {
                 scoreString = '0' + scoreString;
                 break;
             default:
-                scoreString = '000000000'
+                scoreString = '000000000';
         }
 
         let x1 = canvasWidth - 50;
@@ -257,16 +258,16 @@ function spaceFlight(): any {
 
     function update() {
         gameTimer = gameTimer + 1;
-        var ihM, iwM;
+        let ihM, iwM;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, w, h);
 
 
         if (image.complete && startMeteorShower) {
-            var iw = image.width;
-            var ih = image.height;
-            for (var i = 0; i < sprites.length; i++) {
-                var spr = sprites[i];
+            let iw = image.width;
+            let ih = image.height;
+            for (let i = 0; i < sprites.length; i++) {
+                let spr = sprites[i];
                 spr.x += spr.dx;
                 spr.y += spr.dy;
                 spr.r += spr.dr;
@@ -282,14 +283,13 @@ function spaceFlight(): any {
         ctx.rotate(0);
 
         if (!gameOver) {
-            shipDraw();
             shipMove();
+            shipDraw();
             beginCountdown();
             scoreCounter();
         } else {
             restart();
         }
-        console.log(sprites[1])
         requestAnimationFrame(update);
     }
 

@@ -83,8 +83,8 @@ function spaceFlight() {
     ctx.canvas.height = window.innerHeight;
     var canvasWidth = canvas.width;
     var canvasHeight = canvas.height;
-    var gameTimer = 0;
-    var shipMoveSpeed = 15;
+    var gameTimer = 4;
+    var shipMoveSpeed = 10;
     var shipX = 50;
     var shipY = canvasHeight / 2 - 100;
     var shipHeight = 50;
@@ -116,20 +116,22 @@ function spaceFlight() {
     }
     meteor(30, function () {
         sprites.push({
-            x: random(w, 2000),
-            y: random(h),
+            x: random(w - 500, w + 500),
+            y: random(0, h + 100),
             xr: 0,
             yr: 0,
             r: random(Math.PI * 2),
             scale: random(0.1, 0.5),
-            dx: random(-2, 0),
+            dx: random(-8, 0),
             dy: random(0, 0),
             dr: random(-0.2, 0.2),
         });
     });
     function shipDraw() {
-        ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
-        gameTimer % 3 === 0 ? ship.src = '../images/rocket_1.png' : ship.src = '../images/rocket_2.png';
+        if (ship.complete && startMeteorShower) {
+            ship.src = gameTimer % 4 === 0 ? '../images/rocket_1.png' : '../images/rocket_2.png';
+            ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
+        }
     }
     function beginCountdown() {
         if (started === false) {
@@ -313,15 +315,14 @@ function spaceFlight() {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.rotate(0);
         if (!gameOver) {
-            shipDraw();
             shipMove();
+            shipDraw();
             beginCountdown();
             scoreCounter();
         }
         else {
             restart();
         }
-        console.log(sprites[1]);
         requestAnimationFrame(update);
     }
     requestAnimationFrame(update);
