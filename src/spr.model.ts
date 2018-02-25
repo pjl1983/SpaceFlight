@@ -1,11 +1,11 @@
 export class SprModel {
     x: number;
     y: number;
-    r: number;
-    xr: number;
-    yr: number;
-    scale: number;
-    dx: number;
-    dy: number;
-    dr: number;
+    sizeX: number;
+    sizeY: number;
+    offsetX: number;
+    offsetY: number;
+    angle: number;
+    speed: number;
+    rotation: number;
 }

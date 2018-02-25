@@ -71,8 +71,8 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function spaceFlight() {
-    var image = new Image;
-    image.src = '../images/rock.png';
+    var meteorImage = new Image;
+    meteorImage.src = '../images/meteor.png';
     var ship = new Image();
     ship.src = '../images/rocket_1.png';
     var canvas;
@@ -84,11 +84,11 @@ function spaceFlight() {
     var canvasWidth = canvas.width;
     var canvasHeight = canvas.height;
     var gameTimer = 4;
-    var shipMoveSpeed = 10;
-    var shipX = 50;
-    var shipY = canvasHeight / 2 - 100;
     var shipHeight = 50;
     var shipWidth = 140;
+    var shipMoveSpeed = 10;
+    var shipX = 50;
+    var shipY = (canvasHeight / 2) - shipHeight / 2;
     var count = 3;
     var score = 0;
     var direction = 1;
@@ -99,7 +99,8 @@ function spaceFlight() {
     var started = false;
     var w;
     var h;
-    var sprites = [];
+    var radians = Math.PI / 180;
+    var meteorArray = [];
     function resize() {
         w = canvas.width = innerWidth;
         h = canvas.height = innerHeight;
@@ -114,17 +115,18 @@ function spaceFlight() {
             callback(count);
         }
     }
-    meteor(30, function () {
-        sprites.push({
-            x: random(w - 500, w + 500),
-            y: random(0, h + 100),
-            xr: 0,
-            yr: 0,
-            r: random(Math.PI * 2),
-            scale: random(0.1, 0.5),
-            dx: random(-8, -2),
-            dy: random(0, 0),
-            dr: random(-0.2, 0.2),
+    meteor(10, function () {
+        var size = random(50, 200);
+        meteorArray.push({
+            x: random(canvas.width, canvas.width + 500),
+            y: random(0, canvas.height),
+            sizeX: size / 2,
+            sizeY: size / 2,
+            offsetX: size,
+            offsetY: size,
+            angle: random(-5, -1),
+            speed: random(1, 10),
+            rotation: random(-10, -1)
         });
     });
     function shipDraw() {
@@ -287,50 +289,57 @@ function spaceFlight() {
         started = false;
         count = 3;
     }
-    function drawImage(image, spr) {
-        ctx.setTransform(spr.scale, 0, 0, spr.scale, spr.xr, spr.yr); // sets scales and origin
-        ctx.rotate(spr.r);
-        ctx.drawImage(image, -image.width / 2, -image.height / 2);
+    function drawMeteor(x, y, sizeX, sizeY, offsetX, offsetY, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle * radians);
+        ctx.drawImage(meteorImage, -sizeX, -sizeY, offsetX, offsetY);
+        ctx.translate(-x, -y);
+        ctx.restore();
     }
     function update() {
         gameTimer = gameTimer + 1;
-        var ihM, iwM;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, w, h);
-        if (image.complete && startMeteorShower) {
-            var iw = image.width;
-            var ih = image.height;
-            for (var i = 0; i < sprites.length; i++) {
-                if (sprites[i].x < 0) {
-                    sprites.splice(i, 1);
-                    sprites.push({
-                        x: w + 200,
-                        y: random(0, h + 100),
-                        xr: 0,
-                        yr: 0,
-                        r: random(Math.PI * 2),
-                        scale: random(0.1, 0.5),
-                        dx: random(-8, -2),
-                        dy: random(0, 0),
-                        dr: random(-0.2, 0.2),
+        if (meteorImage.complete && startMeteorShower) {
+            for (var i = 0; i < meteorArray.length; i++) {
+                if (meteorArray[i].x + meteorArray[i].sizeX < 0) {
+                    meteorArray.splice(i, 1);
+                    var size = random(50, 200);
+                    meteorArray.push({
+                        x: random(canvas.width, canvas.width + 300),
+                        y: random(0, canvas.height),
+                        sizeX: size / 2,
+                        sizeY: size / 2,
+                        offsetX: size,
+                        offsetY: size,
+                        angle: random(-5, -1),
+                        speed: random(1, 10),
+                        rotation: random(-10, -1)
                     });
                 }
             }
-            for (var i = 0; i < sprites.length; i++) {
-                var spr = sprites[i];
-                spr.x += spr.dx;
-                spr.y += spr.dy;
-                spr.r += spr.dr;
-                iwM = iw * spr.scale * 2 + w;
-                ihM = ih * spr.scale * 2 + h;
-                spr.xr = ((spr.x % iwM) + iwM) % iwM - iw * spr.scale;
-                spr.yr = ((spr.y % ihM) + ihM) % ihM - ih * spr.scale;
-                drawImage(image, spr);
+            for (var i = 0; i < meteorArray.length; i++) {
+                drawMeteor(meteorArray[i].x, meteorArray[i].y, meteorArray[i].sizeX, meteorArray[i].sizeY, meteorArray[i].offsetX, meteorArray[i].offsetY, meteorArray[i].angle);
+                meteorArray[i].angle += meteorArray[i].rotation;
+                meteorArray[i].x -= meteorArray[i].speed;
             }
         }
-        console.log(sprites[0].x);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.rotate(0);
+        for (var i = 0; i < meteorArray.length; i++) {
+            var shipMin = shipY - shipHeight / 2;
+            var shipMax = shipY + shipHeight / 2;
+            var shipW = shipX + shipWidth;
+            var meteorMax = meteorArray[i].y + meteorArray[i].sizeY / 2;
+            var meteorMin = meteorArray[i].y - meteorArray[i].sizeY / 2;
+            if (meteorArray[i].x - meteorArray[i].sizeX / 2 <= shipW && meteorArray[i].x + meteorArray[i].sizeX / 2 >= shipX && ((shipMax > meteorMin && shipMax <= meteorMax) || (shipMin < meteorMax && shipMin >= meteorMin))) {
+                console.log('hit');
+                // console.log({
+                //     shipMax: shipMax,
+                //     shipMin: shipMin,
+                //     meteorMax: meteorMax,
+                //     meteorMin: meteorMin,
+                // });
+            }
+        }
         if (!gameOver) {
             shipMove();
             shipDraw();

@@ -1,8 +1,8 @@
 import {SprModel} from './spr.model';
 
 function spaceFlight(): any {
-    let image = new Image;
-    image.src = '../images/rock.png';
+    let meteorImage = new Image;
+    meteorImage.src = '../images/meteor.png';
 
     let ship = new Image();
     ship.src = '../images/rocket_1.png';
@@ -19,12 +19,12 @@ function spaceFlight(): any {
 
     let gameTimer: number = 4;
 
-    let shipMoveSpeed: number = 10;
-    let shipX: number = 50;
-    let shipY: number = canvasHeight / 2 - 100;
-
     const shipHeight: number = 50;
     const shipWidth: number = 140;
+
+    let shipMoveSpeed: number = 10;
+    let shipX: number = 50;
+    let shipY: number = (canvasHeight / 2) - shipHeight / 2;
 
     let count: number = 3;
 
@@ -39,8 +39,9 @@ function spaceFlight(): any {
 
     let w: number;
     let h: number;
+    let radians = Math.PI / 180;
 
-    const sprites: SprModel[] = [];
+    const meteorArray: SprModel[] = [];
 
     function resize() {
         w = canvas.width = innerWidth;
@@ -61,19 +62,21 @@ function spaceFlight(): any {
         }
     }
 
-    meteor(30, () => {
-        sprites.push({
-            x: random(w - 500, w + 500),
-            y: random(0, h + 100),
-            xr: 0,
-            yr: 0,
-            r: random(Math.PI * 2),
-            scale: random(0.1, 0.5),// Meteor Size
-            dx: random(-8, -2), // Meteor Speed
-            dy: random(0, 0),
-            dr: random(-0.2, 0.2),
+    meteor(10, () => {
+        let size = random(50, 200);
+        meteorArray.push({
+            x: random(canvas.width, canvas.width + 500),
+            y: random(0, canvas.height),
+            sizeX: size / 2,
+            sizeY: size / 2,
+            offsetX: size,
+            offsetY: size,
+            angle: random(-5, -1),
+            speed: random(1, 10),
+            rotation: random(-10, -1)
         });
     });
+
 
     function shipDraw(): void {
         if (ship.complete && startMeteorShower) {
@@ -250,55 +253,57 @@ function spaceFlight(): any {
         count = 3;
     }
 
-    function drawImage(image: HTMLImageElement, spr: SprModel) {
-        ctx.setTransform(spr.scale, 0, 0, spr.scale, spr.xr, spr.yr); // sets scales and origin
-        ctx.rotate(spr.r);
-        ctx.drawImage(image, -image.width / 2, -image.height / 2);
+    function drawMeteor(x: number, y: number, sizeX: number, sizeY: number, offsetX: number, offsetY: number, angle: number) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle * radians);
+        ctx.drawImage(meteorImage, -sizeX, -sizeY, offsetX, offsetY);
+        ctx.translate(-x, -y);
+        ctx.restore();
     }
 
     function update() {
         gameTimer = gameTimer + 1;
-        let ihM, iwM;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, w, h);
-        if (image.complete && startMeteorShower) {
-            let iw = image.width;
-            let ih = image.height;
 
-            for (let i = 0; i < sprites.length; i++) {
-                if (sprites[i].x < 0) {
-                    sprites.splice(i, 1);
-                    sprites.push({
-                        x: w + 200,
-                        y: random(0, h + 100),
-                        xr: 0,
-                        yr: 0,
-                        r: random(Math.PI * 2),
-                        scale: random(0.1, 0.5),// Meteor Size
-                        dx: random(-8, -2), // Meteor Speed
-                        dy: random(0, 0),
-                        dr: random(-0.2, 0.2),
+        if (meteorImage.complete && startMeteorShower) {
+            for (let i = 0; i < meteorArray.length; i++) {
+                if (meteorArray[i].x + meteorArray[i].sizeX < 0) {
+                    meteorArray.splice(i, 1);
+                    let size = random(50, 200);
+                    meteorArray.push({
+                        x: random(canvas.width, canvas.width + 300),
+                        y: random(0, canvas.height),
+                        sizeX: size / 2,
+                        sizeY: size / 2,
+                        offsetX: size,
+                        offsetY: size,
+                        angle: random(-5, -1),
+                        speed: random(1, 10),
+                        rotation: random(-10, -1)
                     });
                 }
             }
 
-            for (let i = 0; i < sprites.length; i++) {
-                let spr = sprites[i];
-                spr.x += spr.dx;
-                spr.y += spr.dy;
-                spr.r += spr.dr;
-                iwM = iw * spr.scale * 2 + w;
-                ihM = ih * spr.scale * 2 + h;
-                spr.xr = ((spr.x % iwM) + iwM) % iwM - iw * spr.scale;
-                spr.yr = ((spr.y % ihM) + ihM) % ihM - ih * spr.scale;
-                drawImage(image, spr);
+            for (let i = 0; i < meteorArray.length; i++) {
+                drawMeteor(meteorArray[i].x, meteorArray[i].y, meteorArray[i].sizeX, meteorArray[i].sizeY, meteorArray[i].offsetX, meteorArray[i].offsetY, meteorArray[i].angle);
+                meteorArray[i].angle += meteorArray[i].rotation;
+                meteorArray[i].x -= meteorArray[i].speed;
             }
         }
 
-        console.log(sprites[0].x);
-
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.rotate(0);
+        for (let i = 0; i < meteorArray.length; i++) {
+            let shipMin = shipY - shipHeight / 2;
+            let shipMax = shipY + shipHeight / 2;
+            let shipW = shipX + shipWidth;
+            let meteorMax = meteorArray[i].y + meteorArray[i].sizeY / 2;
+            let meteorMin = meteorArray[i].y - meteorArray[i].sizeY / 2;
+            if (meteorArray[i].x - meteorArray[i].sizeX / 2 <= shipW &&
+                meteorArray[i].x + meteorArray[i].sizeX / 2 >= shipX &&
+                ((shipMax > meteorMin && shipMax <= meteorMax) || (shipMin < meteorMax && shipMin >= meteorMin))) {
+                console.log('hit');
+            }
+        }
 
         if (!gameOver) {
             shipMove();
