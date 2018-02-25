@@ -63,15 +63,15 @@ function spaceFlight(): any {
 
     meteor(30, () => {
         sprites.push({
-            x: random(w - 500, w + 500),
-            y: random(0, h + 100),
+            x: random(w - 500, w + 500), // Horizontal position
+            y: random(0, h + 100), // Vertical position
             xr: 0,
             yr: 0,
-            r: random(Math.PI * 2),
-            scale: random(0.1, 0.5),// Meteor Size
-            dx: random(-8, -2), // Meteor Speed
-            dy: random(0, 0),
-            dr: random(-0.2, 0.2),
+            r: random(Math.PI * 2), // Rotation speed
+            scale: random(0.1, 0.5), // Meteor Size
+            dx: random(-8, -2), // Horizontal Meteor Speed
+            dy: random(0, 0), // Vertical Meteor Speed
+            dr: random(-0.2, 0.2)
         });
     });
 
@@ -269,15 +269,15 @@ function spaceFlight(): any {
                 if (sprites[i].x < 0) {
                     sprites.splice(i, 1);
                     sprites.push({
-                        x: w + 200,
-                        y: random(0, h + 100),
+                        x: w + 200, // Horizontal position
+                        y: random(0, h + 100), // Vertical position
                         xr: 0,
                         yr: 0,
-                        r: random(Math.PI * 2),
-                        scale: random(0.1, 0.5),// Meteor Size
-                        dx: random(-8, -2), // Meteor Speed
-                        dy: random(0, 0),
-                        dr: random(-0.2, 0.2),
+                        r: random(Math.PI * 2), // Rotation speed 
+                        scale: random(0.1, 0.5), // Meteor Size
+                        dx: random(-8, -2), // Horizontal Meteor Speed
+                        dy: random(0, 0), // Vertical Meteor Speed
+                        dr: random(-0.2, 0.2)
                     });
                 }
             }
