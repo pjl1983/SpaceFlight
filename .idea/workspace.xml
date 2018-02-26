@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b515095-bcf7-46f4-b87e-3f342d417476" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/images/meteor.png" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/dist/bundle.js" afterPath="$PROJECT_DIR$/dist/bundle.js" />
-      <change beforePath="$PROJECT_DIR$/images/rock.png" afterPath="" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" afterPath="$PROJECT_DIR$/src/index.ts" />
-      <change beforePath="$PROJECT_DIR$/src/spr.model.ts" afterPath="$PROJECT_DIR$/src/spr.model.ts" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -24,8 +21,8 @@
       <file leaf-file-name="index.ts" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/index.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="261" column="5" lean-forward="false" selection-start-line="261" selection-start-column="5" selection-end-line="261" selection-end-column="5" />
+            <state relative-caret-position="-820">
+              <caret line="290" column="26" lean-forward="true" selection-start-line="290" selection-start-column="26" selection-end-line="290" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -63,6 +60,13 @@
       <find>console.log</find>
       <find>splice</find>
       <find>antiClockwise1</find>
+      <find>gameOver</find>
+      <find>count</find>
+      <find>startMeteorShower</find>
+      <find>explode</find>
+      <find>iExplode</find>
+      <find>meteorArray</find>
+      <find>new</find>
     </findStrings>
     <replaceStrings>
       <replace>shipMove</replace>
@@ -197,7 +201,7 @@
       <workItem from="1518307242499" duration="13058000" />
       <workItem from="1518383786254" duration="2697000" />
       <workItem from="1518921387818" duration="15591000" />
-      <workItem from="1519518189300" duration="15296000" />
+      <workItem from="1519518189300" duration="22688000" />
     </task>
     <task id="LOCAL-00001" summary="Created spinning meteors and added in score counter.">
       <created>1518321585918</created>
@@ -227,11 +231,18 @@
       <option name="project" value="LOCAL" />
       <updated>1518933486008</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Rewrote meteor spin method.">
+      <created>1519586033924</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1519586033925</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71024000" />
+    <option name="totallyTimeSpent" value="78416000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -283,11 +294,12 @@
     <MESSAGE value="Changed spaceship." />
     <MESSAGE value="Fixed space ship image flicker and changed meteor speed." />
     <MESSAGE value="Fixed randomization of meteor." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed randomization of meteor." />
+    <MESSAGE value="Rewrote meteor spin method." />
+    <option name="LAST_COMMIT_MESSAGE" value="Rewrote meteor spin method." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -408,6 +420,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -491,10 +506,15 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/images/explosion.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="261" column="5" lean-forward="false" selection-start-line="261" selection-start-column="5" selection-end-line="261" selection-end-column="5" />
+        <state relative-caret-position="-820">
+          <caret line="290" column="26" lean-forward="true" selection-start-line="290" selection-start-column="26" selection-end-line="290" selection-end-column="26" />
           <folding />
         </state>
       </provider>

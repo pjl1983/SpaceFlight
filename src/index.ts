@@ -1,11 +1,21 @@
 import {SprModel} from './spr.model';
 
 function spaceFlight(): any {
-    let meteorImage = new Image;
+    let meteorImage = new Image();
     meteorImage.src = '../images/meteor.png';
 
     let ship = new Image();
     ship.src = '../images/rocket_1.png';
+
+    let explosion = new Image();
+    explosion.src = '../images/explosion.png';
+
+    let explosionSprite: number[][] = [
+        [0, 0], [125, 0], [250, 0], [375, 0],
+        [0, 125], [125, 125], [250, 125], [375, 125],
+        [0, 250], [125, 250], [250, 250], [375, 250],
+        [0, 375], [125, 375], [250, 375], [375, 375]
+    ];
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
@@ -36,12 +46,14 @@ function spaceFlight(): any {
     let startMeteorShower: boolean = false;
     let gameOver: boolean = false;
     let started: boolean = false;
+    let crash: boolean = false;
 
     let w: number;
     let h: number;
     let radians = Math.PI / 180;
 
-    const meteorArray: SprModel[] = [];
+    let iExplode: number = 0;
+    let meteorArray: SprModel[] = [];
 
     function resize() {
         w = canvas.width = innerWidth;
@@ -62,24 +74,25 @@ function spaceFlight(): any {
         }
     }
 
-    meteor(10, () => {
-        let size = random(50, 200);
-        meteorArray.push({
-            x: random(canvas.width, canvas.width + 500),
-            y: random(0, canvas.height),
-            sizeX: size / 2,
-            sizeY: size / 2,
-            offsetX: size,
-            offsetY: size,
-            angle: random(-5, -1),
-            speed: random(1, 10),
-            rotation: random(-10, -1)
+    function createMeteors() {
+        meteor(10, () => {
+            let size = random(50, 200);
+            meteorArray.push({
+                x: random(canvas.width, canvas.width + 500),
+                y: random(0, canvas.height),
+                sizeX: size / 2,
+                sizeY: size / 2,
+                offsetX: size,
+                offsetY: size,
+                angle: random(-5, -1),
+                speed: random(1, 10),
+                rotation: random(-10, -1)
+            });
         });
-    });
-
+    }
 
     function shipDraw(): void {
-        if (ship.complete && startMeteorShower) {
+        if (ship.complete && startMeteorShower && !crash) {
             ship.src = gameTimer % 4 === 0 ? '../images/rocket_1.png' : '../images/rocket_2.png';
             ctx.drawImage(ship, shipX, shipY, shipWidth, shipHeight);
         }
@@ -241,16 +254,25 @@ function spaceFlight(): any {
     }
 
     function restart(): void {
-        ctx.font = '50px Arial';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.fillText('Would You like to play again?', canvas.width / 2, 300);
-        ctx.font = '25px Arial';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.fillText('(Press Y to begin)', canvas.width / 2, 400);
+        // ctx.font = '50px Arial';
+        // ctx.fillStyle = '#ffffff';
+        // ctx.textAlign = 'center';
+        // ctx.fillText('Would You like to play again?', canvas.width / 2, 300);
+        // ctx.font = '25px Arial';
+        // ctx.fillStyle = '#ffffff';
+        // ctx.textAlign = 'center';
+        // ctx.fillText('(Press Y to begin)', canvas.width / 2, 400);
+        meteorArray = [];
+        createMeteors();
         started = false;
         count = 3;
+        iExplode = 0;
+        crash = false;
+        shipX = 50;
+        shipY = (canvasHeight / 2) - shipHeight / 2;
+        gameOver = false;
+        gameTimer = 0;
+        score = 0;
     }
 
     function drawMeteor(x: number, y: number, sizeX: number, sizeY: number, offsetX: number, offsetY: number, angle: number) {
@@ -260,6 +282,15 @@ function spaceFlight(): any {
         ctx.drawImage(meteorImage, -sizeX, -sizeY, offsetX, offsetY);
         ctx.translate(-x, -y);
         ctx.restore();
+    }
+
+    function explode() {
+        if (iExplode < explosionSprite.length) {
+            setTimeout(() => {
+                iExplode += iExplode + 1;
+                explode();
+            }, 50);
+        }
     }
 
     function update() {
@@ -301,7 +332,20 @@ function spaceFlight(): any {
             if (meteorArray[i].x - meteorArray[i].sizeX / 2 <= shipW &&
                 meteorArray[i].x + meteorArray[i].sizeX / 2 >= shipX &&
                 ((shipMax > meteorMin && shipMax <= meteorMax) || (shipMin < meteorMax && shipMin >= meteorMin))) {
-                console.log('hit');
+                if (!crash) {
+                    crash = true;
+                    explode();
+                    meteorArray.splice(i, 1);
+                }
+            }
+        }
+
+        if (crash) {
+            if (iExplode < explosionSprite.length) {
+                ctx.drawImage(explosion, explosionSprite[iExplode][0], explosionSprite[iExplode][1], 115, 115, shipX, shipY, 200, 200);
+            } else {
+                startMeteorShower = false;
+                gameOver = true;
             }
         }
 
@@ -311,11 +355,15 @@ function spaceFlight(): any {
             beginCountdown();
             scoreCounter();
         } else {
-            restart();
+            setTimeout(() => {
+                restart();
+            }, 2000);
+
         }
         requestAnimationFrame(update);
     }
 
+    createMeteors();
     requestAnimationFrame(update);
 }
 
