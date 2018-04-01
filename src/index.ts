@@ -47,6 +47,7 @@ function spaceFlight(): any {
     let gameOver: boolean = false;
     let started: boolean = false;
     let crash: boolean = false;
+    let restarting: boolean = false;
 
     let w: number;
     let h: number;
@@ -141,7 +142,7 @@ function spaceFlight(): any {
     });
 
     function shipMove(): void {
-        if (keyPress) {
+        if (keyPress && !crash) {
             switch (keyCode) {
                 case 37:
                     // Left
@@ -273,6 +274,7 @@ function spaceFlight(): any {
         gameOver = false;
         gameTimer = 0;
         score = 0;
+        restarting = false;
     }
 
     function drawMeteor(x: number, y: number, sizeX: number, sizeY: number, offsetX: number, offsetY: number, angle: number) {
@@ -342,7 +344,7 @@ function spaceFlight(): any {
 
         if (crash) {
             if (iExplode < explosionSprite.length) {
-                ctx.drawImage(explosion, explosionSprite[iExplode][0], explosionSprite[iExplode][1], 115, 115, shipX, shipY, 200, 200);
+                ctx.drawImage(explosion, explosionSprite[iExplode][0], explosionSprite[iExplode][1], 115, 115, shipX, shipY - 100, 200, 200);
             } else {
                 startMeteorShower = false;
                 gameOver = true;
@@ -354,11 +356,11 @@ function spaceFlight(): any {
             shipDraw();
             beginCountdown();
             scoreCounter();
-        } else {
+        } else if (!restarting) {
+            restarting = true;
             setTimeout(() => {
                 restart();
             }, 2000);
-
         }
         requestAnimationFrame(update);
     }
